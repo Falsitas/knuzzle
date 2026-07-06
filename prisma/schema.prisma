@@ -1,0 +1,136 @@
+// -----------------------------------------------------------------------------
+// Prisma Generator
+// -----------------------------------------------------------------------------
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+// -----------------------------------------------------------------------------
+// Database Configuration
+// Connection URL is configured in prisma.config.ts
+// -----------------------------------------------------------------------------
+datasource db {
+  provider = "postgresql"
+}
+
+// -----------------------------------------------------------------------------
+// Enums
+// -----------------------------------------------------------------------------
+
+/// User permission
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+/// User's primary session and vote session
+enum Session {
+  VOCAL
+  GUITAR
+  KEYBOARD
+  BASS
+  DRUM
+}
+
+/// User vote
+enum VoteType {
+  LIKE
+  DISLIKE
+}
+
+/// Administrator's final decision for a song
+enum SongStatus {
+  PENDING
+  SELECTED
+  REJECTED
+}
+
+// -----------------------------------------------------------------------------
+// User
+// A registered member of the band.
+//
+// Relations
+// - createdSongs : Songs this user registered
+// - vocalSongs   : Songs assigned to this user as vocalist
+// - votes        : Votes cast by this user
+// -----------------------------------------------------------------------------
+model User {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  password String
+  nickname String
+
+  role           Role    @default(MEMBER)
+  primarySession Session
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  createdSongs Song[] @relation("SongCreator")
+  vocalSongs   Song[] @relation("SongVocal")
+  votes        Vote[]
+}
+
+// -----------------------------------------------------------------------------
+// Song
+// A candidate song for the upcoming performance.
+//
+// createdBy : User who registered the song.
+// vocal     : User assigned as vocalist.
+// -----------------------------------------------------------------------------
+model Song {
+  id           Int     @id @default(autoincrement())
+  title        String
+  artist       String
+  referenceUrl String?
+  memo         String?
+
+  status SongStatus @default(PENDING)
+
+  createdById Int
+  vocalId     Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  createdBy User @relation("SongCreator", fields: [createdById], references: [id])
+  vocal     User @relation("SongVocal", fields: [vocalId], references: [id])
+
+  votes Vote[]
+}
+
+// -----------------------------------------------------------------------------
+// Vote
+// One user's vote for one song.
+//
+// Rules
+// - One user can vote only once per song.
+// - LIKE votes must include session information.
+// - line is used for instruments requiring multiple positions
+//   (e.g. Guitar 1, Guitar 2).
+// -----------------------------------------------------------------------------
+model Vote {
+  id Int @id @default(autoincrement())
+
+  userId Int
+  songId Int
+
+  voteType VoteType
+
+  session Session?
+  /// Session-specific detail.
+  /// Examples:
+  /// - Guitar: "1", "2"
+  /// - Keyboard: "Piano", "Pad"
+  /// - Drum/Bass/Vocal: null
+  sessionDetail String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+  song Song @relation(fields: [songId], references: [id])
+
+  @@unique([userId, songId])
+}
