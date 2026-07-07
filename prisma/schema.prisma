@@ -4,6 +4,7 @@
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
+  moduleFormat = "cjs"
 }
 
 // -----------------------------------------------------------------------------
@@ -46,6 +47,10 @@ enum SongStatus {
   REJECTED
 }
 
+enum AuthProvider {
+  KAKAO
+}
+
 // -----------------------------------------------------------------------------
 // User
 // A registered member of the band.
@@ -56,20 +61,21 @@ enum SongStatus {
 // - votes        : Votes cast by this user
 // -----------------------------------------------------------------------------
 model User {
-  id       Int    @id @default(autoincrement())
-  email    String @unique
-  password String
-  nickname String
+  id             Int    @id @default(autoincrement())
+  email          String? @unique
+  provider       AuthProvider
+  providerId     String   @unique
+  nickname       String
 
   role           Role    @default(MEMBER)
-  primarySession Session
+  primarySession Session?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
-  createdSongs Song[] @relation("SongCreator")
-  vocalSongs   Song[] @relation("SongVocal")
-  votes        Vote[]
+  createdSongs   Song[] @relation("SongCreator")
+  vocalSongs     Song[] @relation("SongVocal")
+  votes          Vote[]
 }
 
 // -----------------------------------------------------------------------------
