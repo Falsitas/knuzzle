@@ -2,6 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { KakaoTokenResponse } from './types/kakao-token-response.type';
+import { KakaoUserResponse } from './types/kakao-user-response.type';
 
 @Injectable()
 export class KakaoService {
@@ -43,5 +44,23 @@ export class KakaoService {
     }
 
     return (await response.json()) as KakaoTokenResponse;
+  }
+
+  async getUserProfile(accessToken: string): Promise<KakaoUserResponse> {
+    const response = await fetch('https://kapi.kakao.com/v2/user/me', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+
+      throw new InternalServerErrorException(
+        `Kakao user request failed: ${error}`,
+      );
+    }
+
+    return (await response.json()) as KakaoUserResponse;
   }
 }

@@ -8,6 +8,7 @@ import { UsersController } from './users/users.controller';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { OauthModule } from './oauth/oauth.module';
+import { SongsModule } from './songs/songs.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { OauthModule } from './oauth/oauth.module';
     UsersModule,
     AuthModule,
     OauthModule,
+    SongsModule,
   ],
   controllers: [AppController, UsersController],
   providers: [AppService, UsersService],
