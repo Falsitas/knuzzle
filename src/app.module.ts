@@ -9,6 +9,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { OauthModule } from './oauth/oauth.module';
 import { SongsModule } from './songs/songs.module';
+import { VotesModule } from './votes/votes.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { SongsModule } from './songs/songs.module';
     AuthModule,
     OauthModule,
     SongsModule,
+    VotesModule,
   ],
   controllers: [AppController, UsersController],
   providers: [AppService, UsersService],
