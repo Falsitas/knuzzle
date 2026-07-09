@@ -15,9 +15,12 @@ export class AuthController {
   }
 
   @Get('kakao/callback')
-  callback(@Query('code') code: string) {
-    console.log(code);
-    return this.authService.loginWithKakao(code);
+  async callback(@Query('code') code: string, @Res() res: Response) {
+    // console.log(code);
+    const result = await this.authService.loginWithKakao(code);
+    return res.redirect(
+      `${process.env.CLIENT_URL}/auth/callback?accessToken=${result.accessToken}`,
+    );
   }
 
   @UseGuards(JwtAuthGuard)

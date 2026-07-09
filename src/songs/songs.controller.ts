@@ -21,6 +21,7 @@ export class SongsController {
     return this.songsService.create(req.user.id, dto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.songsService.findAll();
