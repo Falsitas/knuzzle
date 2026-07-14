@@ -41,7 +41,7 @@ export class SongsService {
     });
   }
 
-  async findAll() {
+  async findAll(userId: number) {
     return this.prisma.song.findMany({
       include: {
         createdBy: {
@@ -57,13 +57,12 @@ export class SongsService {
           },
         },
         votes: {
+          where: {
+            userId,
+          },
           select: {
-            user: {
-              select: {
-                id: true,
-                nickname: true,
-              },
-            },
+            id: true,
+            song: true,
             voteType: true,
             session: true,
             sessionDetail: true,

@@ -42,6 +42,9 @@ export class UsersService {
         nickname: true,
         role: true,
         primarySession: true,
+        createdSongs: true,
+        vocalSongs: true,
+        votes: true,
       },
     });
   }

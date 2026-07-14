@@ -23,7 +23,7 @@ export class SongsController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll() {
-    return this.songsService.findAll();
+  findAll(@Request() req) {
+    return this.songsService.findAll(req.user.id);
   }
 }

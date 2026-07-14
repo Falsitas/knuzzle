@@ -19,6 +19,20 @@ export class VotesService {
       throw new NotFoundException('곡을 찾을 수 없습니다.');
     }
 
+    // 빈 문자열이면 null 로 변환
+    const sessionDetail = dto.sessionDetail?.trim() || null;
+
+    // 유저 확인
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('사용자를 찾을 수 없습니다.');
+    }
+
     // 이미 투표했으면 수정, 아니면 생성
     return this.prisma.vote.upsert({
       where: {
@@ -30,8 +44,8 @@ export class VotesService {
 
       update: {
         voteType: dto.voteType,
-        session: dto.session,
-        sessionDetail: dto.sessionDetail,
+        session: user.primarySession,
+        sessionDetail: sessionDetail,
       },
 
       create: {
@@ -48,8 +62,8 @@ export class VotesService {
         },
 
         voteType: dto.voteType,
-        session: dto.session,
-        sessionDetail: dto.sessionDetail,
+        session: user.primarySession,
+        sessionDetail: sessionDetail,
       },
     });
   }
