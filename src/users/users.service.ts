@@ -44,7 +44,30 @@ export class UsersService {
         primarySession: true,
         createdSongs: true,
         vocalSongs: true,
-        votes: true,
+        votes: {
+          select: {
+            id: true,
+            voteType: true,
+            session: true,
+            sessionDetail: true,
+            song: {
+              select: {
+                id: true,
+                title: true,
+                artist: true,
+                referenceUrl: true,
+                vocal: {
+                  select: {
+                    id: true,
+                    nickname: true,
+                  },
+                },
+                requiredParts: true,
+                votes: true,
+              },
+            },
+          },
+        },
       },
     });
   }
