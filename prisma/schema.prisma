@@ -103,7 +103,28 @@ model Song {
   createdBy User @relation("SongCreator", fields: [createdById], references: [id])
   vocal     User @relation("SongVocal", fields: [vocalId], references: [id])
 
+  requiredParts SongRequiredPart[]
+  
   votes Vote[]
+}
+
+// -----------------------------------------------------------------------------
+// SongRequiredPart
+// Required part of the song.
+//
+// session should be unigue to prevent double guitar for example.
+// count shows how many session will be needed for same instrument (guitar, keyboard)
+// -----------------------------------------------------------------------------
+model SongRequiredPart {
+  id Int @id @default(autoincrement())
+
+  songId Int
+  song Song @relation(fields: [songId], references: [id], onDelete: Cascade)
+
+  session Session
+  count Int
+
+  @@unique([songId, session])
 }
 
 // -----------------------------------------------------------------------------

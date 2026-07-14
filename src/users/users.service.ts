@@ -1,15 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Session } from 'generated/prisma/enums';
+import { FindUsersDto } from './dto/find-users.dto';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAll() {
+  async findAll(query: FindUsersDto) {
     return this.prisma.user.findMany({
       orderBy: {
         id: 'asc',
+      },
+      where: {
+        ...(query.primarySession && {
+          primarySession: query.primarySession,
+        }),
       },
     });
   }

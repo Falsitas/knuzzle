@@ -1,20 +1,24 @@
 import {
+  IsArray,
   IsInt,
   IsNotEmpty,
   IsOptional,
   IsString,
   IsUrl,
   Min,
+  ValidateNested,
 } from 'class-validator';
+import { CreateSongRequiredPartDto } from './create-song-required-part.dto';
+import { Type } from 'class-transformer';
 
 export class CreateSongDto {
   @IsString()
   @IsNotEmpty()
-  title: string;
+  title!: string;
 
   @IsString()
   @IsNotEmpty()
-  artist: string;
+  artist!: string;
 
   @IsOptional()
   @IsUrl()
@@ -22,5 +26,10 @@ export class CreateSongDto {
 
   @IsInt()
   @Min(1)
-  vocalId: number;
+  vocalId!: number;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateSongRequiredPartDto)
+  requiredParts!: CreateSongRequiredPartDto[];
 }

@@ -33,6 +33,10 @@ export class SongsService {
             id: dto.vocalId,
           },
         },
+
+        requiredParts: {
+          create: dto.requiredParts,
+        },
       },
     });
   }
@@ -65,6 +69,7 @@ export class SongsService {
             sessionDetail: true,
           },
         },
+        requiredParts: true,
       },
       orderBy: {
         createdAt: 'desc',
