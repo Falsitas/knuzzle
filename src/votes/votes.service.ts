@@ -67,4 +67,12 @@ export class VotesService {
       },
     });
   }
+
+  async findAll() {
+    return this.prisma.vote.findMany({
+      orderBy: {
+        id: 'asc',
+      },
+    });
+  }
 }
