@@ -47,7 +47,7 @@ export class UsersService {
         votes: {
           select: {
             id: true,
-            voteType: true,
+            rating: true,
             session: true,
             sessionDetail: true,
             song: {

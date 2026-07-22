@@ -69,7 +69,7 @@ export class SongsService {
           select: {
             id: true,
             song: true,
-            voteType: true,
+            rating: true,
             session: true,
             sessionDetail: true,
           },

@@ -1,6 +1,4 @@
-import { IsEnum, IsInt, IsOptional, IsString, Min } from 'class-validator';
-
-import { VoteType } from '../../../generated/prisma/enums';
+import { IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
 
 export class CreateVoteDto {
   @IsInt()
@@ -11,6 +9,8 @@ export class CreateVoteDto {
   @IsString()
   sessionDetail?: string;
 
-  @IsEnum(VoteType)
-  voteType!: VoteType;
+  @IsInt()
+  @Min(1)
+  @Max(5)
+  rating!: number;
 }

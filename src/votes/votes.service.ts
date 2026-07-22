@@ -43,7 +43,7 @@ export class VotesService {
       },
 
       update: {
-        voteType: dto.voteType,
+        rating: dto.rating,
         session: user.primarySession,
         sessionDetail: sessionDetail,
       },
@@ -61,7 +61,7 @@ export class VotesService {
           },
         },
 
-        voteType: dto.voteType,
+        rating: dto.rating,
         session: user.primarySession,
         sessionDetail: sessionDetail,
       },

@@ -34,12 +34,6 @@ enum Session {
   DRUM
 }
 
-/// User vote
-enum VoteType {
-  LIKE
-  DISLIKE
-}
-
 /// Administrator's final decision for a song
 enum SongStatus {
   PENDING
@@ -143,7 +137,7 @@ model Vote {
   userId Int
   songId Int
 
-  voteType VoteType
+  rating Int  // 1~5
 
   session Session?
   /// Session-specific detail.
