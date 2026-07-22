@@ -10,14 +10,18 @@ CREATE TYPE "VoteType" AS ENUM ('LIKE', 'DISLIKE');
 -- CreateEnum
 CREATE TYPE "SongStatus" AS ENUM ('PENDING', 'SELECTED', 'REJECTED');
 
+-- CreateEnum
+CREATE TYPE "AuthProvider" AS ENUM ('KAKAO');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
-    "email" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
+    "email" TEXT,
+    "provider" "AuthProvider" NOT NULL,
+    "providerId" TEXT NOT NULL,
     "nickname" TEXT NOT NULL,
     "role" "Role" NOT NULL DEFAULT 'MEMBER',
-    "primarySession" "Session" NOT NULL,
+    "primarySession" "Session",
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -41,6 +45,16 @@ CREATE TABLE "Song" (
 );
 
 -- CreateTable
+CREATE TABLE "SongRequiredPart" (
+    "id" SERIAL NOT NULL,
+    "songId" INTEGER NOT NULL,
+    "session" "Session" NOT NULL,
+    "count" INTEGER NOT NULL,
+
+    CONSTRAINT "SongRequiredPart_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Vote" (
     "id" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
@@ -58,6 +72,12 @@ CREATE TABLE "Vote" (
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "User_providerId_key" ON "User"("providerId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "SongRequiredPart_songId_session_key" ON "SongRequiredPart"("songId", "session");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Vote_userId_songId_key" ON "Vote"("userId", "songId");
 
 -- AddForeignKey
@@ -65,6 +85,9 @@ ALTER TABLE "Song" ADD CONSTRAINT "Song_createdById_fkey" FOREIGN KEY ("createdB
 
 -- AddForeignKey
 ALTER TABLE "Song" ADD CONSTRAINT "Song_vocalId_fkey" FOREIGN KEY ("vocalId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "SongRequiredPart" ADD CONSTRAINT "SongRequiredPart_songId_fkey" FOREIGN KEY ("songId") REFERENCES "Song"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Vote" ADD CONSTRAINT "Vote_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
