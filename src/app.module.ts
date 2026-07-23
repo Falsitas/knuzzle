@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { OauthModule } from './oauth/oauth.module';
 import { SongsModule } from './songs/songs.module';
 import { VotesModule } from './votes/votes.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { VotesModule } from './votes/votes.module';
     OauthModule,
     SongsModule,
     VotesModule,
+    AdminModule,
   ],
   controllers: [AppController, UsersController],
   providers: [AppService, UsersService],
