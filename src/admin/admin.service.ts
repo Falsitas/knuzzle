@@ -13,13 +13,17 @@ export class AdminService {
           id: {
             notIn: [1, 2],
           },
+          primarySession: {
+            not: 'VOCAL',
+          },
         },
         select: {
           id: true,
           nickname: true,
+          primarySession: true,
         },
         orderBy: {
-          nickname: 'asc',
+          primarySession: 'asc',
         },
       }),
 
@@ -27,6 +31,17 @@ export class AdminService {
         select: {
           id: true,
           title: true,
+          vocal: {
+            select: {
+              nickname: true,
+            },
+          },
+          requiredParts: {
+            select: {
+              session: true,
+              count: true,
+            },
+          },
         },
         orderBy: {
           title: 'asc',
@@ -38,30 +53,42 @@ export class AdminService {
           userId: true,
           songId: true,
           rating: true,
+          sessionDetail: true,
         },
       }),
     ]);
 
-    const voteMap = new Map<string, number>();
+    const voteMap = new Map<
+      string,
+      { rating: number; sessionDetail: string | null }
+    >();
 
     for (const vote of votes) {
-      voteMap.set(`${vote.songId}-${vote.userId}`, vote.rating);
+      voteMap.set(`${vote.songId}-${vote.userId}`, {
+        rating: vote.rating,
+        sessionDetail: vote.sessionDetail,
+      });
     }
 
     const songTable = songs.map((song) => {
-      const songVotes: Record<number, number> = {};
+      const songVotes: Record<
+        number,
+        { rating: number; sessionDetail: string | null }
+      > = {};
 
       for (const user of users) {
-        const rating = voteMap.get(`${song.id}-${user.id}`);
+        const vote = voteMap.get(`${song.id}-${user.id}`);
 
-        if (rating !== undefined) {
-          songVotes[user.id] = rating;
+        if (vote) {
+          songVotes[user.id] = vote;
         }
       }
 
       return {
         id: song.id,
         title: song.title,
+        vocalNickname: song.vocal?.nickname,
+        requiredParts: song.requiredParts,
         votes: songVotes,
       };
     });
