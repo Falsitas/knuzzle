@@ -13,9 +13,6 @@ export class AdminService {
           id: {
             notIn: [1, 2],
           },
-          primarySession: {
-            not: 'VOCAL',
-          },
         },
         select: {
           id: true,
